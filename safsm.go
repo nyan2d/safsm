@@ -45,7 +45,7 @@ func (s *Safsm) ReadSession(r *http.Request) (*Session, error) {
 	return s.storage.FindSession(token.Value)
 }
 
-func (s *Safsm) ReadBearerSession(r http.Request) (*Session, error) {
+func (s *Safsm) ReadBearerSession(r *http.Request) (*Session, error) {
 	header := r.Header.Get("Authorization")
 	if header == "" {
 		return nil, ErrNoBearerToken
