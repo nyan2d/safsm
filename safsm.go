@@ -3,6 +3,7 @@ package safsm
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -42,6 +43,19 @@ func (s *Safsm) ReadSession(r *http.Request) (*Session, error) {
 	}
 
 	return s.storage.FindSession(token.Value)
+}
+
+func (s *Safsm) ReadBearerSession(r http.Request) (*Session, error) {
+	header := r.Header.Get("Authorization")
+	if header == "" {
+		return nil, ErrNoBearerToken
+	}
+	parts := strings.Split(header, " ")
+	if len(parts) != 2 || parts[0] != "Bearer" {
+		return nil, ErrNoBearerToken
+	}
+
+	return s.storage.FindSession(parts[1])
 }
 
 func (s *Safsm) RemoveInvalids() {
